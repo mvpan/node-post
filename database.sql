@@ -11,10 +11,6 @@ CREATE TABLE products (
   category_id INTEGER NOT NULL,
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
-select products.name product_images.img_url
-from product
-where products.id = 1
-
 
 CREATE TABLE description (
   id SERIAL PRIMARY KEY,
@@ -32,7 +28,9 @@ CREATE TABLE product_images (
   img_urls TEXT[], 
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
-
+ALTER TABLE product_images DROP COLUMN img_urls;
+ALTER TABLE product_images 
+ADD img_urls TEXT[];
 SELECT 
     p.id,
     p.name,
@@ -86,3 +84,11 @@ LEFT JOIN
     description d ON p.id = d.product_id
 LEFT JOIN 
     product_images pi ON p.id = pi.product_id;
+
+UPDATE product_images
+SET img_urls = ARRAY [
+        '1.jpg',
+        '2.jpg',
+        '3.jpg'
+    ]
+WHERE product_id = 2;

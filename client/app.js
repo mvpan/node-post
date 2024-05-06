@@ -26,13 +26,11 @@ function displayProductList(products) {
             <div class="product">
                 <h2>${product.name}</h2>
                 <p><strong>Цена:</strong> ${product.price} руб.</p>
-                <p><strong>Бренд:</strong> ${product.brand}</p>
+                <p><strong>Бренд:</strong> ${product.mater}</p>
                 <p><strong>Цвет:</strong> ${product.color}</p>
                 <p><strong>Артикул:</strong> ${product.art}</p>
                 <p><strong>Описание:</strong> ${product.text}</p>
-                <img src="${
-                  "/img/" + product.img_url
-                }" alt="Изображение продукта">
+
             </div>
         `;
 

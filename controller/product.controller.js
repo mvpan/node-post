@@ -2,7 +2,7 @@ const db = require("../db");
 
 class ProductController {
   async createProduct(req, res) {
-    const { name, price, categoryName, mater, color, art, text, imageUrls } =
+    const { name, price, categoryName, mater, color, art, text, img_urls } =
       req.body;
 
     try {
@@ -36,14 +36,14 @@ class ProductController {
 
       // Добавляем описание продукта
       await db.query(
-        `INSERT INTO description (product_id, brand, color, art, text) VALUES ($1, $2, $3, $4, $5)`,
+        `INSERT INTO description (product_id, mater, color, art, text) VALUES ($1, $2, $3, $4, $5)`,
         [productId, mater, color, art, text]
       );
 
       // Добавляем изображение продукта
       await db.query(
         `INSERT INTO product_images (product_id, img_urls) VALUES ($1, $2)`,
-        [productId, imageUrls]
+        [productId, img_urls]
       );
 
       // Отправляем успешный ответ с данными о созданном продукте
@@ -64,8 +64,6 @@ class ProductController {
           description d ON p.id = d.product_id
       LEFT JOIN 
           product_images pi ON p.id = pi.product_id
-      WHERE 
-          p.id = 1 
 
             
     `;
@@ -73,7 +71,6 @@ class ProductController {
       const productsResult = await db.query(productsQuery);
 
       // Проверяем, были ли найдены продукты
-      console.log(productsResult.rows);
       if (productsResult.rows.length === 0) {
         return res.status(404).json({ message: "Продукты не найдены" });
       }
@@ -91,9 +88,27 @@ class ProductController {
 
   async getOneProduct(req, res) {
     const id = req.params.id;
-    const product = await db.query(`SELECT * FROM categories where id = $1 `, [
-      id,
-    ]);
+    const product = await db.query(
+      `
+    SELECT 
+    p.id,
+    p.name,
+    p.price,
+    d.mater,
+    d.color,
+    d.art,
+    d.text,
+    pi.img_urls
+FROM 
+    products p
+LEFT JOIN 
+    description d ON p.id = d.product_id
+LEFT JOIN 
+    product_images pi ON p.id = pi.product_id
+WHERE 
+    p.id = $1; `,
+      [id]
+    );
     res.json(product.rows[0]);
   }
 
