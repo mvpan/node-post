@@ -55,20 +55,19 @@ class ProductController {
   }
 
   async getProduct(req, res) {
+    const id = req.params.id;
     try {
       // Запрос к базе данных для получения списка продуктов с дополнительными данными
-      const productsQuery = `
-      SELECT p.id, p.name,p.price,d.mater,d.color,d.art,d.text,pi.img_urls
+      const productsResult = await db.query(
+        `
+      SELECT p.id, p.name, p.price, d.mater, d.color, d.art, d.text, pi.img_urls
       FROM products p
-      LEFT JOIN 
-          description d ON p.id = d.product_id
-      LEFT JOIN 
-          product_images pi ON p.id = pi.product_id
-
-            
-    `;
-
-      const productsResult = await db.query(productsQuery);
+      LEFT JOIN description d ON p.id = d.product_id
+      LEFT JOIN product_images pi ON p.id = pi.product_id
+      WHERE p.category_id = $1;
+      `,
+        [id]
+      );
 
       // Проверяем, были ли найдены продукты
       if (productsResult.rows.length === 0) {

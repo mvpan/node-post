@@ -28,6 +28,8 @@ CREATE TABLE product_images (
   img_urls TEXT[], 
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
+UPDATE categories SET name = 'Верхняя одежда' WHERE id = 1;
 ALTER TABLE product_images DROP COLUMN img_urls;
 ALTER TABLE product_images 
 ADD img_urls TEXT[];
